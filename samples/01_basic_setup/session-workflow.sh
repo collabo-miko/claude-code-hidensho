@@ -32,7 +32,7 @@ claude -n "feature-user-auth"
 claude -r "feature-user-auth"
 
 # 5. 機能完了後、セッション一覧を確認
-claude -l
+claude -r    # 引数なしでセッション一覧ピッカーが開く
 
 # ==========================================
 # ワークフロー 2: マルチタスク切替
