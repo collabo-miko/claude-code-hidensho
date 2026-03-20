@@ -1,0 +1,29 @@
+{
+  "permissions": {
+    "allow": [
+      "Read",
+      "Bash(npm run *)",
+      "Bash(npx jest *)",
+      "Bash(git diff *)",
+      "Bash(git log *)",
+      "Bash(git status)"
+    ],
+    "deny": [
+      "Bash(rm -rf *)",
+      "Bash(rm -r *)",
+      "Bash(sudo *)",
+      "Bash(curl *)",
+      "Bash(wget *)",
+      "Bash(git push --force*)",
+      "Bash(git push -f*)",
+      "Edit(.env*)",
+      "Edit(*.pem)",
+      "Edit(*.key)",
+      "Read(.env*)",
+      "Read(*.pem)",
+      "Read(*.key)",
+      "Read(~/.ssh/**)",
+      "Read(~/.aws/**)"
+    ]
+  }
+}

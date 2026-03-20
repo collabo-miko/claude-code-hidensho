@@ -1,0 +1,8 @@
+/.claude/
+node_modules/
+dist/
+build/
+.DS_Store
+.env
+*.env
+!*.env.example

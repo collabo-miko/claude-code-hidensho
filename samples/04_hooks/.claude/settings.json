@@ -1,0 +1,56 @@
+{
+  "permissions": {
+    "allow": [
+      "Read",
+      "Bash(node *)",
+      "Bash(npm *)",
+      "Bash(git status)",
+      "Bash(git diff *)",
+      "Bash(git log *)"
+    ]
+  },
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "F=$(jq -r '.tool_input.file_path // empty'); case \"$F\" in *.example) exit 0;; esac; echo \"$F\" | grep -qE '(\\.env($|\\..+)|\\.pem$|\\.key$)' && { echo '機密ファイルへの書き込みはブロックされました' >&2; exit 2; } || exit 0"
+          }
+        ]
+      },
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "jq -r '.tool_input.command // empty' | grep -qE '(\\brm\\s+.*-[a-zA-Z]*r|\\btruncate\\b|\\bdd\\b|\\bmkfs\\b|\\bsudo\\b)' && { echo '危険なコマンドはブロックされました' >&2; exit 2; } || exit 0"
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "jq -r '.tool_input.file_path // empty' | xargs -I{} npx prettier --write '{}' 2>/dev/null; exit 0"
+          }
+        ]
+      }
+    ],
+    "Notification": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "osascript -e 'display notification \"Claude Code が入力を待っています\" with title \"Claude Code\"' 2>/dev/null; exit 0"
+          }
+        ]
+      }
+    ]
+  }
+}

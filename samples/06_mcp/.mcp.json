@@ -1,0 +1,16 @@
+{
+  "mcpServers": {
+    "github": {
+      "type": "http",
+      "url": "https://api.githubcopilot.com/mcp/"
+    },
+    "example-local": {
+      "command": "node",
+      "args": ["mcp-server.js"],
+      "env": {
+        "API_KEY": "${MCP_API_KEY:-demo-key}",
+        "LOG_LEVEL": "${LOG_LEVEL:-info}"
+      }
+    }
+  }
+}

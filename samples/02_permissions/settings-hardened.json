@@ -1,0 +1,45 @@
+{
+  "_comment": "段階3: 本番環境・チーム向け強化設定",
+  "permissions": {
+    "allow": [
+      "Read",
+      "Bash(npm test *)",
+      "Bash(npm run lint *)",
+      "Bash(npx jest *)",
+      "Bash(git status)",
+      "Bash(git diff *)",
+      "Bash(git log *)",
+      "Bash(git branch *)",
+      "Bash(node *)"
+    ],
+    "deny": [
+      "Read(node_modules/**)",
+      "Read(dist/**)",
+      "Read(build/**)",
+      "Read(*.lock)",
+      "Read(.env*)",
+      "Read(*.pem)",
+      "Read(*.key)",
+      "Read(~/.ssh/**)",
+      "Read(~/.aws/**)",
+      "Edit(.env*)",
+      "Edit(*.pem)",
+      "Edit(*.key)",
+      "Write(.env*)",
+      "Write(*.pem)",
+      "Write(*.key)",
+      "Bash(rm -rf *)",
+      "Bash(rm -r *)",
+      "Bash(sudo *)",
+      "Bash(curl *)",
+      "Bash(wget *)",
+      "Bash(git push --force *)",
+      "Bash(git push -f *)",
+      "Bash(git reset --hard *)",
+      "Bash(chmod 777 *)",
+      "Bash(eval *)",
+      "Bash(base64 *)",
+      "WebFetch(*)"
+    ]
+  }
+}

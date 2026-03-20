@@ -1,0 +1,17 @@
+{
+  "_comment": "段階1: 最小限の権限設定（開発初期・個人プロジェクト向け）",
+  "permissions": {
+    "allow": [
+      "Read",
+      "Bash(npm test *)",
+      "Bash(npm run lint *)",
+      "Bash(git status)",
+      "Bash(git diff *)",
+      "Bash(git log *)"
+    ],
+    "deny": [
+      "Bash(rm -rf *)",
+      "Bash(sudo *)"
+    ]
+  }
+}
