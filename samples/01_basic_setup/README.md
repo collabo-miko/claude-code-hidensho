@@ -11,6 +11,9 @@ Claude Code の基本的な操作を体験するサンプルです。
 >
 > - **Claude に聞く:** `>` 引用部分をターミナル A で入力
 > - **`/command`** — ターミナル A でスラッシュコマンドを実行
+>
+> **Windows の場合:** ターミナル B は PowerShell を使用してください。
+> `.sh` スクリプトには `.ps1` 版を用意しています（例: `bash ci-review.sh` → `.\ci-review.ps1`）。
 
 ## 演習
 

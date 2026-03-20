@@ -11,6 +11,9 @@
 >
 > - **Claude に聞く:** `>` 引用部分をターミナル A で入力
 > - **`/command`** — ターミナル A でスラッシュコマンドを実行
+>
+> **Windows の場合:** ターミナル B は PowerShell を使用してください。
+> `.sh` スクリプトには `.ps1` 版を用意しています（例: `bash check-unicode.sh` → `.\check-unicode.ps1`）。
 
 ## ディレクトリ構成
 

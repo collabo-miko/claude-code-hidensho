@@ -11,6 +11,9 @@
 >
 > - **Claude に聞く:** `>` 引用部分をターミナル A で入力
 > - **`/command`** — ターミナル A でスラッシュコマンドを実行
+>
+> **Windows の場合:** ターミナル B は PowerShell を使用してください。
+> `cp` は `Copy-Item`、`git checkout` はそのまま使えます。
 
 ## 事前準備
 
