@@ -2,11 +2,15 @@
 
 フックの設定と動作を実際に確認するサンプルです。
 
-> **凡例（全サンプル共通）:**
-> - **ターミナル:** Claude の外（通常のシェル）で実行
-> - **Claude に聞く:** `>` 引用部分を Claude セッション内で入力
-> - **`! command`** — セッション内から Bash を直接実行
-> - **`/command`** — セッション内のスラッシュコマンド
+> **準備: ターミナルを2つ開いてください**
+>
+> | ターミナル | 用途 | 表記 |
+> |-----------|------|------|
+> | **A** | Claude セッション（プロンプト・スラッシュコマンド） | `[A]` |
+> | **B** | シェル操作（bash・git・スクリプト実行） | `[B]` |
+>
+> - **Claude に聞く:** `>` 引用部分をターミナル A で入力
+> - **`/command`** — ターミナル A でスラッシュコマンドを実行
 
 ## このサンプルに含まれるフック
 
@@ -19,10 +23,15 @@
 
 ## 事前準備
 
-ターミナル:
+**[B]**
 ```bash
 cd samples/04_hooks
 cp secrets.env.example secrets.env
+```
+
+**[A]** Claude を起動:
+```bash
+cd samples/04_hooks
 claude
 ```
 
@@ -61,9 +70,9 @@ Claude に聞く:
 
 ### 4. フックのデバッグ
 
-`Ctrl+C` で抜けて、ターミナル:
+**[A]** `Ctrl+C` で抜けて、デバッグモードで起動:
 ```bash
-claude --debug hooks    # フックのデバッグログ付きで起動
+claude --debug hooks
 ```
 
 ## カスタムフックの追加方法
@@ -115,10 +124,10 @@ Claude に聞く:
 Claude に聞く:
 > .claude/settings.json の PreToolUse フックに scan-secrets.sh を追加して
 
-セッション内で:
-```
-! echo 'const API_KEY = "sk-test-1234567890abcdef";' > test-secret.js
-! git add test-secret.js
+**[B]** わざとシークレットを含むファイルをステージ:
+```bash
+echo 'const API_KEY = "sk-test-1234567890abcdef";' > test-secret.js
+git add test-secret.js
 ```
 
 Claude に聞く:
@@ -126,9 +135,10 @@ Claude に聞く:
 
 → scan-secrets.sh がシークレットを検出してブロック！
 
-クリーンアップ:
-```
-! git reset HEAD test-secret.js && rm test-secret.js
+**[B]** クリーンアップ:
+```bash
+git reset HEAD test-secret.js
+rm test-secret.js
 ```
 
 ### 6. フックの組み合わせパターン

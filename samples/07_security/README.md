@@ -2,11 +2,15 @@
 
 セキュリティ設定の実践と、脅威への対策を体験するサンプルです。
 
-> **凡例（全サンプル共通）:**
-> - **ターミナル:** Claude の外（通常のシェル）で実行
-> - **Claude に聞く:** `>` 引用部分を Claude セッション内で入力
-> - **`! command`** — セッション内から Bash を直接実行
-> - **`/command`** — セッション内のスラッシュコマンド
+> **準備: ターミナルを2つ開いてください**
+>
+> | ターミナル | 用途 | 表記 |
+> |-----------|------|------|
+> | **A** | Claude セッション（プロンプト・スラッシュコマンド） | `[A]` |
+> | **B** | シェル操作（bash・git・スクリプト実行） | `[B]` |
+>
+> - **Claude に聞く:** `>` 引用部分をターミナル A で入力
+> - **`/command`** — ターミナル A でスラッシュコマンドを実行
 
 ## ディレクトリ構成
 
@@ -24,7 +28,7 @@
 
 ## 演習
 
-ターミナル:
+**[A]** Claude を起動:
 ```bash
 cd samples/07_security
 claude
@@ -64,20 +68,26 @@ Claude に聞く:
 
 ### 4. Unicode 制御文字チェック
 
-セッション内:
+**[B]** Rules File Backdoor 攻撃に使われる不可視文字を検出:
+```bash
+cd samples/07_security
+bash check-unicode.sh CLAUDE.md
+bash check-unicode.sh .claude/rules/security.md
 ```
-! bash check-unicode.sh CLAUDE.md
-! bash check-unicode.sh .claude/rules/security.md
-```
-
-→ Rules File Backdoor 攻撃に使われる不可視文字を検出
 
 ### 5. インシデント対応の練習
 
 プロンプトインジェクションが疑われる場合の手順:
-1. `Ctrl+C` でセッション停止
-2. `! git diff --cached` で変更確認
-3. `! od -c CLAUDE.md` で不可視文字を検査
+
+1. **[A]** `Ctrl+C` でセッション停止
+2. **[B]** 変更を確認:
+```bash
+git diff --cached
+```
+3. **[B]** 不可視文字を検査:
+```bash
+od -c CLAUDE.md
+```
 
 ---
 

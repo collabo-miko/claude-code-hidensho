@@ -2,17 +2,21 @@
 
 Claude Code の基本的な操作を体験するサンプルです。
 
-> **凡例（全サンプル共通）:**
-> - **ターミナル:** Claude の外（通常のシェル）で実行
-> - **Claude に聞く:** `>` 引用部分を Claude セッション内で入力
-> - **`! command`** — セッション内から Bash を直接実行
-> - **`/command`** — セッション内のスラッシュコマンド
+> **準備: ターミナルを2つ開いてください**
+>
+> | ターミナル | 用途 | 表記 |
+> |-----------|------|------|
+> | **A** | Claude セッション（プロンプト・スラッシュコマンド） | `[A]` |
+> | **B** | シェル操作（bash・git・スクリプト実行） | `[B]` |
+>
+> - **Claude に聞く:** `>` 引用部分をターミナル A で入力
+> - **`/command`** — ターミナル A でスラッシュコマンドを実行
 
 ## 演習
 
 ### 1. 対話セッションの開始
 
-ターミナル:
+**[A]** Claude を起動:
 ```bash
 cd samples/01_basic_setup
 claude
@@ -21,27 +25,25 @@ claude
 Claude に聞く:
 > このプロジェクトの構成を説明して
 
-`!` プレフィックスで、セッション内から Bash を直接実行できます:
-
-```
-! ls -la
-```
-
 接続・モデル状態の確認:
-
 ```
 /status
 ```
 
 コンテキスト使用状況の視覚化:
-
 ```
 /context
 ```
 
+**[B]** もうひとつのターミナルで、同じディレクトリのファイルを確認できます:
+```bash
+cd samples/01_basic_setup
+ls -la
+```
+
 ### 2. 名前付きセッションの管理
 
-名前付きセッションで開始します。ターミナル:
+**[A]** `Ctrl+C` で抜けて、名前付きセッションで開始:
 ```bash
 claude -n "basic-demo"
 ```
@@ -54,7 +56,7 @@ Claude に聞く:
 /rename "basic-demo-v2"
 ```
 
-`Ctrl+C` でセッションを抜けた後、名前で再開できます。ターミナル:
+**[A]** `Ctrl+C` で抜けた後、名前で再開:
 ```bash
 claude -r "basic-demo-v2"
 ```
@@ -101,17 +103,17 @@ Claude に聞く（別の話題で）:
 `claude -p` はセッションを起動せず、1回の質問→回答で終了します。
 CI/CD やシェルスクリプトから使う場合の基本形です。
 
-質問して即終了。ターミナル:
+**[B]** 質問して即終了:
 ```bash
 claude -p "app.js のコードを説明して"
 ```
 
-パイプ入力:
+**[B]** パイプ入力:
 ```bash
 cat app.js | claude -p "このコードのバグを見つけて"
 ```
 
-JSON 出力（スクリプト連携向け）:
+**[B]** JSON 出力（スクリプト連携向け）:
 ```bash
 claude -p "app.js の関数一覧を返して" --output-format json
 ```
@@ -119,9 +121,8 @@ claude -p "app.js の関数一覧を返して" --output-format json
 ### 5. CI パイプラインでのコードレビュー自動化
 
 `ci-review.sh` は `claude -p` を使い、Git の差分をレビューするスクリプトです。
-対話セッション内からブランチ作成→レビュー実行まで一気に試せます。
 
-ターミナル:
+**[A]** Claude を起動:
 ```bash
 claude
 ```
@@ -132,20 +133,21 @@ Claude に聞く:
 Claude に聞く:
 > app.js の calculateDiscount 関数のバグを修正して
 
-修正されたら、ブランチを作ってコミット:
-```
-! git checkout -b demo/ci-review
-! git add app.js && git commit -m "fix: calculateDiscount のバグ修正"
-```
-
-CI レビュースクリプトを実行:
-```
-! bash ci-review.sh origin/main
+**[B]** 修正されたら、ブランチを作ってコミット:
+```bash
+git checkout -b demo/ci-review
+git add app.js && git commit -m "fix: calculateDiscount のバグ修正"
 ```
 
-レビュー結果が表示されます。クリーンアップ:
+**[B]** CI レビュースクリプトを実行:
+```bash
+bash ci-review.sh origin/main
 ```
-! git checkout main && git branch -D demo/ci-review
+
+**[B]** レビュー結果を確認したらクリーンアップ:
+```bash
+git checkout main
+git branch -D demo/ci-review
 ```
 
 **GitHub Actions での使い方:**
@@ -158,7 +160,7 @@ CI レビュースクリプトを実行:
 
 ### 6. セッション管理のワークフロー
 
-Claude に聞く:
+**[A]** Claude に聞く:
 > session-workflow.sh を読んで、各ワークフローを説明して
 
 **4つのワークフロー:**

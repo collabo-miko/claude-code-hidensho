@@ -2,18 +2,27 @@
 
 権限設定の動作を実際に確認するサンプルです。
 
-> **凡例（全サンプル共通）:**
-> - **ターミナル:** Claude の外（通常のシェル）で実行
-> - **Claude に聞く:** `>` 引用部分を Claude セッション内で入力
-> - **`! command`** — セッション内から Bash を直接実行
-> - **`/command`** — セッション内のスラッシュコマンド
+> **準備: ターミナルを2つ開いてください**
+>
+> | ターミナル | 用途 | 表記 |
+> |-----------|------|------|
+> | **A** | Claude セッション（プロンプト・スラッシュコマンド） | `[A]` |
+> | **B** | シェル操作（bash・git・スクリプト実行） | `[B]` |
+>
+> - **Claude に聞く:** `>` 引用部分をターミナル A で入力
+> - **`/command`** — ターミナル A でスラッシュコマンドを実行
 
 ## 事前準備
 
-ターミナル:
+**[B]** ダミーの `.env` ファイルを作成:
 ```bash
 cd samples/02_permissions
-cp .env.example .env    # ダミーの .env ファイルを作成
+cp .env.example .env
+```
+
+**[A]** Claude を起動:
+```bash
+cd samples/02_permissions
 claude
 ```
 
@@ -21,7 +30,7 @@ claude
 
 ### 1. 権限モードの切り替え
 
-セッション内で `Shift+Tab` を押してモードを切り替えてみてください:
+**[A]** セッション内で `Shift+Tab` を押してモードを切り替えてみてください:
 - **Default** → 各ツール初回使用時に確認
 - **Accept Edits** → ファイル編集を自動承認
 - **Plan** → 読み取り専用（コード分析向け）
@@ -55,15 +64,20 @@ Claude に聞く:
 
 ### 3. CLI フラグでの権限制御
 
-`Ctrl+C` で抜けた後、ターミナル:
+**[A]** `Ctrl+C` で抜けて、各フラグ付きで起動してみてください:
+
+特定ツールを禁止して起動:
 ```bash
-# 特定ツールを禁止して起動
 claude --disallowedTools "Bash(git push *)"
+```
 
-# Plan モードで起動（読み取り専用）
+Plan モードで起動（読み取り専用）:
+```bash
 claude --permission-mode plan
+```
 
-# dontAsk モードで起動（事前承認以外は自動拒否）
+dontAsk モードで起動（事前承認以外は自動拒否）:
+```bash
 claude --permission-mode dontAsk
 ```
 
@@ -93,9 +107,15 @@ Claude に聞く:
 
 **試してみよう — 段階的な強化体験:**
 
-`Ctrl+C` で抜けて、ターミナル:
+**[A]** `Ctrl+C` で抜けます。
+
+**[B]** 最小設定をコピーして適用:
 ```bash
 cp settings-minimal.json .claude/settings.json
+```
+
+**[A]** Claude を起動:
+```bash
 claude
 ```
 
@@ -104,9 +124,15 @@ Claude に聞く:
 
 → ブロックされない！
 
-`Ctrl+C` で抜けて、ターミナル:
+**[A]** `Ctrl+C` で抜けます。
+
+**[B]** 強化設定に切替:
 ```bash
 cp settings-hardened.json .claude/settings.json
+```
+
+**[A]** Claude を起動:
+```bash
 claude
 ```
 
@@ -115,15 +141,12 @@ Claude に聞く:
 
 → deny でブロック ✅
 
-> **重要:** 演習後は元の設定に戻してください:
-> `git checkout .claude/settings.json`
+**[B]** 演習後は元の設定に戻してください:
+```bash
+git checkout .claude/settings.json
+```
 
 ### 6. 権限コンフリクトのデバッグ
-
-ターミナル:
-```bash
-claude
-```
 
 Claude に聞く:
 > .claude/settings.json を読んで、allow と deny のルールが競合するケースがないか分析して
@@ -138,7 +161,7 @@ Claude に聞く:
 
 ### 7. dontAsk モードの体験
 
-`Ctrl+C` で抜けて、ターミナル:
+**[A]** `Ctrl+C` で抜けて、dontAsk モードで起動:
 ```bash
 claude --permission-mode dontAsk
 ```
