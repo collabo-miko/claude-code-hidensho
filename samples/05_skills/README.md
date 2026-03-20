@@ -2,6 +2,12 @@
 
 スキルの作成・呼び出し・動的コンテキスト注入を体験するサンプルです。
 
+> **凡例（全サンプル共通）:**
+> - **ターミナル:** Claude の外（通常のシェル）で実行
+> - **Claude に聞く:** `>` 引用部分を Claude セッション内で入力
+> - **`! command`** — セッション内から Bash を直接実行
+> - **`/command`** — セッション内のスラッシュコマンド
+
 ## ディレクトリ構成
 
 ```
@@ -23,34 +29,38 @@
 
 ## 演習
 
-### 1. スキル一覧の確認
-
+ターミナル:
 ```bash
 cd samples/05_skills
 claude
-/skills    # 利用可能なスキル一覧を表示
+```
+
+### 1. スキル一覧の確認
+
+セッション内:
+```
+/skills               ← 利用可能なスキル一覧を表示
 ```
 
 ### 2. コードレビュースキルの実行
 
-```bash
-# セッション内で:
-/review-code
-# → src/calculator.js のレビューが実行される
+セッション内:
+```
+/review-code          ← src/calculator.js のレビューが実行される
 ```
 
 ### 3. テスト生成スキルの実行
 
-```bash
-/gen-test
-# → calculator.js のテストが自動生成される
+セッション内:
+```
+/gen-test             ← calculator.js のテストが自動生成される
 ```
 
 ### 4. 動的コンテキスト付きスキル
 
-```bash
-/deploy-check
-# → `!git status` と `!git log` の出力がスキルに注入されてから実行
+セッション内:
+```
+/deploy-check         ← !`git status` と !`git log` の出力が注入されてから実行
 ```
 
 ---
@@ -59,25 +69,13 @@ claude
 
 ### 5. ヘルスチェックスキルの体験
 
-`health-check` スキルは `!`command`` 構文を使い、実行時にリアルタイムのプロジェクト情報を動的に収集します。
-
-```bash
-# スキル一覧を確認
-/skills
-# → health-check が追加されている
-
-# スキルを実行
-/health-check
-# → Git 状態、依存関係の更新状況、セキュリティ脆弱性、テスト結果が
-#   自動収集されて診断レポートが生成される
+セッション内:
+```
+/health-check         ← Git 状態、依存関係、テスト結果が自動収集されて診断レポート生成
 ```
 
-**SKILL.md の中身を確認してみましょう:**
-
-```bash
-# 「.claude/skills/health-check/SKILL.md を読んで、
-#   !`command` 構文がどう使われているか説明して」
-```
+Claude に聞く:
+> .claude/skills/health-check/SKILL.md を読んで、!`command` 構文がどう使われているか説明して
 
 **動的コンテキストの仕組み:**
 - `!`git status --short`` → スキル実行時に `git status` を実行し、その出力がプロンプトに埋め込まれる
@@ -86,40 +84,35 @@ claude
 
 ### 6. スキルを一から作る演習
 
-自分でスキルを作成する体験です。以下のどれかを選んで作ってみましょう。
-
 **演習 A: コードフォーマットスキル**
-```bash
-# 「以下の仕様でスキルを作って:
-#   名前: format-code
-#   場所: .claude/skills/format-code/SKILL.md
-#   動作: src/ 配下の全 .js ファイルをフォーマットチェック
-#   allowed-tools: Read, Bash(npx prettier *)
-#   user-invocable: true」
-```
+
+Claude に聞く:
+> 以下の仕様でスキルを作って:
+> 名前: format-code
+> 場所: .claude/skills/format-code/SKILL.md
+> 動作: src/ 配下の全 .js ファイルをフォーマットチェック
+> allowed-tools: Read, Bash(npx prettier *)
+> user-invocable: true
 
 **演習 B: 変更影響分析スキル**
-```bash
-# 「以下の仕様でスキルを作って:
-#   名前: impact-analysis
-#   場所: .claude/skills/impact-analysis/SKILL.md
-#   動作: !`git diff --name-only` で変更ファイルを取得し、
-#         各ファイルの依存関係（import 先）を分析して影響範囲を表示
-#   context: fork（メインのコンテキストを汚さない）」
-```
+
+Claude に聞く:
+> 以下の仕様でスキルを作って:
+> 名前: impact-analysis
+> 場所: .claude/skills/impact-analysis/SKILL.md
+> 動作: !`git diff --name-only` で変更ファイルを取得し、各ファイルの依存関係を分析して影響範囲を表示
+> context: fork（メインのコンテキストを汚さない）
 
 ### 7. allowed-tools によるスキルのサンドボックス化
 
-スキルの `allowed-tools` は、そのスキルの実行中に使えるツールを制限します。
+Claude に聞く:
+> .claude/skills/deploy-check/SKILL.md の frontmatter を見せて
 
-```bash
-# deploy-check スキルの allowed-tools を確認
-# 「.claude/skills/deploy-check/SKILL.md の frontmatter を見せて」
-# → allowed-tools: Read, Bash(git*), Bash(npm test*)
-# → Edit や Write は使えない（デプロイチェックに書き込みは不要）
+→ `allowed-tools: Read, Bash(git*), Bash(npm test*)` — Edit や Write は使えない
 
-# 試してみよう: deploy-check 実行中に書き込みが拒否されるか確認
-/deploy-check
+セッション内:
+```
+/deploy-check         ← 実行中に書き込みが拒否されるか確認
 ```
 
 **allowed-tools 設計のベストプラクティス:**

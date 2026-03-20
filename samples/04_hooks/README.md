@@ -2,6 +2,12 @@
 
 フックの設定と動作を実際に確認するサンプルです。
 
+> **凡例（全サンプル共通）:**
+> - **ターミナル:** Claude の外（通常のシェル）で実行
+> - **Claude に聞く:** `>` 引用部分を Claude セッション内で入力
+> - **`! command`** — セッション内から Bash を直接実行
+> - **`/command`** — セッション内のスラッシュコマンド
+
 ## このサンプルに含まれるフック
 
 | フック | イベント | 動作 |
@@ -13,31 +19,36 @@
 
 ## 事前準備
 
+ターミナル:
 ```bash
 cd samples/04_hooks
-cp secrets.env.example secrets.env    # ダミーのシークレットファイルを作成
+cp secrets.env.example secrets.env
+claude
 ```
 
 ## 演習
 
 ### 1. フック設定の確認
 
-```bash
-claude
-/hooks    # 設定されたフック一覧を表示
+セッション内:
+```
+/hooks                ← 設定されたフック一覧を表示
 ```
 
 ### 2. ブロックフックの体験
 
-```bash
-# セッション内で:
-# 「secrets.env を編集して内容を変更して」→ Edit フックでブロックされる
-# 「secrets.env に新しい行を追加して」→ Write フックでブロックされる
-# 「rm -rf で tmp/ を削除して」→ Bash フックでブロックされる
-#
-# 注意: Read（読み取り）はフックでブロックされません。
-# 読み取りも禁止するには permissions の deny ルールを使います。
-```
+Claude に聞く:
+> secrets.env を編集して内容を変更して
+
+→ Edit フックでブロックされる
+
+Claude に聞く:
+> rm -rf で tmp/ を削除して
+
+→ Bash フックでブロックされる
+
+> **注意:** Read（読み取り）はフックでブロックされません。
+> 読み取りも禁止するには permissions の deny ルールを使います。
 
 ### 3. exit code の確認
 
@@ -46,18 +57,24 @@ claude
 - **exit 1** = 非ブロックエラー（verbose モードでのみ stderr 表示、処理は続行）
 - **exit 2** = ブロック（操作を拒否）
 
-`Ctrl+O` で verbose モードにすると、exit 1 のフック出力も確認できます。
+セッション内:
+```
+Ctrl+O                ← verbose モードにすると exit 1 のフック出力も確認できる
+```
 
 ### 4. フックのデバッグ
 
+`Ctrl+C` で抜けて、ターミナル:
 ```bash
 claude --debug hooks    # フックのデバッグログ付きで起動
 ```
 
 ## カスタムフックの追加方法
 
-`.claude/settings.json` を編集して、独自フックを追加できます。
-例: コミット前にシークレットをスキャンするフック
+Claude に聞く:
+> .claude/settings.json を読んでフックの設定構造を説明して
+
+インラインフックの例（コミット前にシークレットをスキャン）:
 
 ```json
 {
@@ -81,10 +98,8 @@ claude --debug hooks    # フックのデバッグログ付きで起動
 
 `scan-secrets.sh` は git commit コマンドを検出し、ステージされた差分にシークレットが含まれていないかスキャンするフックです。
 
-```bash
-# まずスクリプトの中身を確認
-# 「scan-secrets.sh を読んで、検出パターンと仕組みを説明して」
-```
+Claude に聞く:
+> scan-secrets.sh を読んで、検出パターンと仕組みを説明して
 
 **検出パターン:**
 
@@ -100,33 +115,29 @@ claude --debug hooks    # フックのデバッグログ付きで起動
 
 **体験手順:**
 
-```bash
-# Step 1: scan-secrets.sh を settings.json に追加
-# セッション内で:
-# 「.claude/settings.json の PreToolUse フックに scan-secrets.sh を追加して」
+Claude に聞く:
+> .claude/settings.json の PreToolUse フックに scan-secrets.sh を追加して
 
-# Step 2: わざとシークレットを含むファイルをステージ
-echo 'const API_KEY = "sk-test-1234567890abcdef";' > test-secret.js
-git add test-secret.js
+セッション内で:
+```
+! echo 'const API_KEY = "sk-test-1234567890abcdef";' > test-secret.js
+! git add test-secret.js
+```
 
-# Step 3: コミットを試みる
-# 「git commit -m 'test' を実行して」
-# → scan-secrets.sh がシークレットを検出してブロック！
+Claude に聞く:
+> git commit -m 'test' を実行して
 
-# Step 4: クリーンアップ
-git reset HEAD test-secret.js
-rm test-secret.js
+→ scan-secrets.sh がシークレットを検出してブロック！
+
+クリーンアップ:
+```
+! git reset HEAD test-secret.js && rm test-secret.js
 ```
 
 ### 6. フックの組み合わせパターン
 
-実務では複数のフックを組み合わせて多層防御を構築します。
-
-```bash
-# セッション内で:
-# 「.claude/settings.json のフック設定を読んで、
-#   各フックがどのイベント・マッチャーで動作するか表にまとめて」
-```
+Claude に聞く:
+> .claude/settings.json のフック設定を読んで、各フックがどのイベント・マッチャーで動作するか表にまとめて
 
 **推奨する組み合わせ:**
 
