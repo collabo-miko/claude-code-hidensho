@@ -11,6 +11,9 @@ param(
     [string]$FilePath
 )
 
+[Console]::OutputEncoding = [System.Text.Encoding]::UTF8
+$OutputEncoding = [System.Text.Encoding]::UTF8
+
 if (-not (Test-Path $FilePath)) {
     Write-Error "ファイルが見つかりません: $FilePath"
     exit 1

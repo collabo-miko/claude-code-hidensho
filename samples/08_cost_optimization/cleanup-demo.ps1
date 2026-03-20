@@ -1,6 +1,8 @@
 # cleanup-demo.ps1
 # setup-demo.ps1 で生成したデモファイルを削除する（Windows版）
 
+[Console]::OutputEncoding = [System.Text.Encoding]::UTF8
+$OutputEncoding = [System.Text.Encoding]::UTF8
 Push-Location $PSScriptRoot
 
 Write-Host "=== デモファイルを削除します ===" -ForegroundColor Cyan

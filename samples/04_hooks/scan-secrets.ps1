@@ -7,6 +7,9 @@
 #   - 汎用 API キー/トークン (password=, api_key=, secret= 等)
 #   - .env ファイルのステージ
 
+[Console]::OutputEncoding = [System.Text.Encoding]::UTF8
+$OutputEncoding = [System.Text.Encoding]::UTF8
+
 $Input = $input | Out-String
 $Cmd = ($Input | ConvertFrom-Json).tool_input.command
 

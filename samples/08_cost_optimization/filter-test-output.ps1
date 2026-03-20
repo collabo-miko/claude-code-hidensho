@@ -1,6 +1,9 @@
 # filter-test-output.ps1
 # PreToolUse フック: テストコマンドの出力をフィルタリングしてトークンを節約する（Windows版）
 
+[Console]::OutputEncoding = [System.Text.Encoding]::UTF8
+$OutputEncoding = [System.Text.Encoding]::UTF8
+
 $Input = $input | Out-String
 $Cmd = ($Input | ConvertFrom-Json).tool_input.command
 

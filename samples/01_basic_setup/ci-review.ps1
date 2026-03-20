@@ -12,6 +12,10 @@ param(
 
 $ErrorActionPreference = "Stop"
 
+# UTF-8 エンコーディングを設定（JSON 出力の日本語文字化け対策）
+[Console]::OutputEncoding = [System.Text.Encoding]::UTF8
+$OutputEncoding = [System.Text.Encoding]::UTF8
+
 $Model = if ($env:REVIEW_MODEL) { $env:REVIEW_MODEL } else { "sonnet" }
 $MaxTokens = if ($env:REVIEW_MAX_TOKENS) { $env:REVIEW_MAX_TOKENS } else { "4096" }
 

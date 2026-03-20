@@ -1,6 +1,9 @@
 # truncate-output.ps1
 # PreToolUse フック: 大量出力が予想されるコマンドの出力行数を制限する（Windows版）
 
+[Console]::OutputEncoding = [System.Text.Encoding]::UTF8
+$OutputEncoding = [System.Text.Encoding]::UTF8
+
 $MaxLines = 200
 
 $Input = $input | Out-String

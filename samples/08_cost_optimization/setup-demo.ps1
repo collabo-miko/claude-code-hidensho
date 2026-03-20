@@ -8,6 +8,8 @@
 #   coverage/      - テストカバレッジレポート
 
 $ErrorActionPreference = "Stop"
+[Console]::OutputEncoding = [System.Text.Encoding]::UTF8
+$OutputEncoding = [System.Text.Encoding]::UTF8
 Push-Location $PSScriptRoot
 
 Write-Host "=== deny ルール体験用デモファイルを生成します ===" -ForegroundColor Cyan

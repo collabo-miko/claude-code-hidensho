@@ -1,6 +1,9 @@
 # filter-build-output.ps1
 # PreToolUse フック: ビルドコマンドの出力を WARNING/ERROR のみにフィルタリングする（Windows版）
 
+[Console]::OutputEncoding = [System.Text.Encoding]::UTF8
+$OutputEncoding = [System.Text.Encoding]::UTF8
+
 $Input = $input | Out-String
 $Cmd = ($Input | ConvertFrom-Json).tool_input.command
 
