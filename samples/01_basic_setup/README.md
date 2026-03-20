@@ -21,33 +21,52 @@ claude
 Claude に聞く:
 > このプロジェクトの構成を説明して
 
-続けてセッション内で:
+`!` プレフィックスで、セッション内から Bash を直接実行できます:
+
 ```
-! ls -la              ← セッション内から Bash 直接実行
-/status               ← 接続・モデル状態の確認
-/context              ← コンテキスト使用状況の視覚化
+! ls -la
+```
+
+接続・モデル状態の確認:
+
+```
+/status
+```
+
+コンテキスト使用状況の視覚化:
+
+```
+/context
 ```
 
 ### 2. 名前付きセッションの管理
 
-ターミナル:
+名前付きセッションで開始します。ターミナル:
 ```bash
-claude -n "basic-demo"        # 名前付きセッションで開始
+claude -n "basic-demo"
 ```
 
 Claude に聞く:
 > app.js を読んで改善点を3つ挙げて
 
-セッション内:
+セッション名を変更:
 ```
 /rename "basic-demo-v2"
 ```
 
-`Ctrl+C` でセッションを抜けた後、ターミナル:
+`Ctrl+C` でセッションを抜けた後、名前で再開できます。ターミナル:
 ```bash
-claude -r "basic-demo-v2"     # 名前で再開（コンテキスト維持）
-claude -c                     # 直前のセッションを再開
-claude -l                     # セッション一覧
+claude -r "basic-demo-v2"
+```
+
+直前のセッションを再開する場合:
+```bash
+claude -c
+```
+
+セッション一覧を表示する場合:
+```bash
+claude -l
 ```
 
 ### 3. コンテキスト管理の実践
@@ -55,22 +74,22 @@ claude -l                     # セッション一覧
 Claude に聞く:
 > app.js を読んで改善点を3つ挙げて
 
-回答を受け取った後:
+回答を受け取った後、会話を要約して圧縮（同じタスクを続ける場合）:
 ```
-/compact                      ← 会話を要約して圧縮（同じタスクを続ける場合）
+/compact
 ```
 
-別のタスクに切り替える場合:
+別のタスクに切り替える場合はコンテキストをリセット:
 ```
-/clear                        ← コンテキストをリセット
+/clear
 ```
 
 Claude に聞く（別の話題で）:
 > README.md を読んで
 
-やっぱり戻したい場合:
+やっぱり戻したい場合は巻き戻し（`Esc` × 2 でも可）:
 ```
-/rewind                       ← 直前の操作を巻き戻し（Esc × 2 でも可）
+/rewind
 ```
 
 ---
@@ -82,15 +101,18 @@ Claude に聞く（別の話題で）:
 `claude -p` はセッションを起動せず、1回の質問→回答で終了します。
 CI/CD やシェルスクリプトから使う場合の基本形です。
 
-ターミナル:
+質問して即終了。ターミナル:
 ```bash
-# 質問して即終了
 claude -p "app.js のコードを説明して"
+```
 
-# パイプ入力
+パイプ入力:
+```bash
 cat app.js | claude -p "このコードのバグを見つけて"
+```
 
-# JSON 出力（スクリプト連携向け）
+JSON 出力（スクリプト連携向け）:
+```bash
 claude -p "app.js の関数一覧を返して" --output-format json
 ```
 
@@ -99,20 +121,29 @@ claude -p "app.js の関数一覧を返して" --output-format json
 `ci-review.sh` は `claude -p` を使い、Git の差分をレビューするスクリプトです。
 対話セッション内からブランチ作成→レビュー実行まで一気に試せます。
 
+ターミナル:
+```bash
+claude
+```
+
 Claude に聞く:
 > ci-review.sh を読んで仕組みを説明して
 
 Claude に聞く:
 > app.js の calculateDiscount 関数のバグを修正して
 
-修正されたら、セッション内で:
+修正されたら、ブランチを作ってコミット:
 ```
 ! git checkout -b demo/ci-review
 ! git add app.js && git commit -m "fix: calculateDiscount のバグ修正"
+```
+
+CI レビュースクリプトを実行:
+```
 ! bash ci-review.sh origin/main
 ```
 
-レビュー結果が表示されます。確認後、クリーンアップ:
+レビュー結果が表示されます。クリーンアップ:
 ```
 ! git checkout main && git branch -D demo/ci-review
 ```

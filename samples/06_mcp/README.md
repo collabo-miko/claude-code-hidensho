@@ -19,9 +19,9 @@ claude mcp list              # 設定済みサーバー一覧
 claude
 ```
 
-セッション内:
+MCP サーバーの管理画面を開く:
 ```
-/mcp                  ← MCP サーバーの管理画面
+/mcp
 ```
 
 ### 2. GitHub MCP サーバーの追加（HTTP）
@@ -62,9 +62,9 @@ Claude に聞く:
 
 ### 5. コンテキスト消費の確認
 
-セッション内:
+MCP サーバーごとのコンテキスト消費量を確認:
 ```
-/context              ← MCP サーバーごとのコンテキスト消費量を確認
+/context
 ```
 
 MCP ツール定義がコンテキストの10%を超える場合は見直しましょう。
@@ -102,9 +102,9 @@ Claude に聞く:
 Claude に聞く:
 > todo_list ツールで TODO コメントを一覧して
 
-セッション内:
+demo-tools のツール定義が消費するトークン数を確認:
 ```
-/context              ← demo-tools のツール定義が消費するトークン数を確認
+/context
 ```
 
 Claude に聞く:

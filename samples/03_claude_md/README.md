@@ -60,10 +60,14 @@ Claude に聞く:
 
 ### 4. CLAUDE.md の編集
 
-セッション内:
+CLAUDE.md の編集 UI を開く:
 ```
-/memory               ← CLAUDE.md の編集 UI を開く
-/init                 ← CLAUDE.md のひな形を再生成
+/memory
+```
+
+CLAUDE.md のひな形を再生成:
+```
+/init
 ```
 
 ---

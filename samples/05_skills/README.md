@@ -37,30 +37,30 @@ claude
 
 ### 1. スキル一覧の確認
 
-セッション内:
+利用可能なスキル一覧を表示:
 ```
-/skills               ← 利用可能なスキル一覧を表示
+/skills
 ```
 
 ### 2. コードレビュースキルの実行
 
-セッション内:
+`src/calculator.js` のレビューを実行:
 ```
-/review-code          ← src/calculator.js のレビューが実行される
+/review-code
 ```
 
 ### 3. テスト生成スキルの実行
 
-セッション内:
+`calculator.js` のテストを自動生成:
 ```
-/gen-test             ← calculator.js のテストが自動生成される
+/gen-test
 ```
 
 ### 4. 動的コンテキスト付きスキル
 
-セッション内:
+`!`git status`` と `!`git log`` の出力が注入されてから実行:
 ```
-/deploy-check         ← !`git status` と !`git log` の出力が注入されてから実行
+/deploy-check
 ```
 
 ---
@@ -69,9 +69,9 @@ claude
 
 ### 5. ヘルスチェックスキルの体験
 
-セッション内:
+Git 状態、依存関係、テスト結果が自動収集されて診断レポートが生成されます:
 ```
-/health-check         ← Git 状態、依存関係、テスト結果が自動収集されて診断レポート生成
+/health-check
 ```
 
 Claude に聞く:
@@ -110,9 +110,9 @@ Claude に聞く:
 
 → `allowed-tools: Read, Bash(git*), Bash(npm test*)` — Edit や Write は使えない
 
-セッション内:
+実行中に書き込みが拒否されるか確認:
 ```
-/deploy-check         ← 実行中に書き込みが拒否されるか確認
+/deploy-check
 ```
 
 **allowed-tools 設計のベストプラクティス:**
