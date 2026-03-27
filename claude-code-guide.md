@@ -133,6 +133,7 @@ claude -p "..." --max-turns 5              # ターン数制限
 | Bash 直接実行 | `!` で始める（例: `! git status`） |
 | 画像の貼り付け | Ctrl+V / Cmd+V |
 | サイドクエスチョン | `/btw 質問`（会話コンテキストを汚さない） |
+| 音声入力 | `/voice` で開始（10言語以上対応。Push-to-talk キー変更可能） |
 | 送信 | Enter |
 
 ### ファイル・ディレクトリの指定
@@ -314,6 +315,22 @@ claude -p "..." --max-turns 5              # ターン数制限
 | `--system-prompt "text"` | システムプロンプト全体を置換 |
 | `--append-system-prompt "text"` | デフォルトプロンプトに追記 |
 | `--system-prompt-file <path>` | ファイルからシステムプロンプトを読み込み |
+
+### パフォーマンス
+
+| フラグ | 説明 |
+|--------|------|
+| `--bare` | hooks, MCP, プラグイン同期をスキップして高速起動。CI/CD でのスクリプト実行に最適 |
+| `--fast` | 高速出力モード（Opus 4.6 のみ。モデルは同一、出力速度を優先） |
+| `--fallback-model <name>` | 主モデルが過負荷時に自動フォールバックするモデルを指定 |
+
+### リモート・Web
+
+| フラグ | 説明 |
+|--------|------|
+| `--remote` | claude.ai/code に Web セッションを作成 |
+| `--teleport` | Web セッションをローカルターミナルに移行 |
+| `--remote-control` | Remote Control サーバーを起動（ブラウザ/モバイルからセッション継続） |
 
 ### その他
 
@@ -591,6 +608,24 @@ export ANTHROPIC_MODEL=opus
 claude --effort high                  # CLI フラグ
 export CLAUDE_CODE_EFFORT_LEVEL=high  # 環境変数
 ```
+
+### Fast モード
+
+`/fast` で Opus 4.6 の高速出力モードを有効にできる。**モデル自体は同じ Opus 4.6 であり、Sonnet 等への切り替えではない。** 出力速度を優先する代わりに、Extended Thinking のトークン量が制限される。
+
+```bash
+/fast                                 # セッション中でトグル（ON/OFF）
+claude --fast                         # CLI フラグで有効化
+```
+
+| 設定 | 通常モード | Fast モード |
+|------|-----------|------------|
+| モデル | Opus 4.6 | Opus 4.6（同じ） |
+| 出力速度 | 標準 | 高速 |
+| Thinking | フル | 制限あり |
+| 推奨場面 | 複雑な設計判断 | 日常的なコーディング |
+
+> **使い分け:** 日常作業は `/fast` ON、複雑な推論が必要な場面で `/fast` OFF に切り替える。
 
 ---
 
@@ -1643,6 +1678,20 @@ Slack チャンネルから直接 Claude Code セッションを実行:
 **イベント:** `user_prompt`、`tool_result`、`api_request`、`api_error`、`tool_decision`
 **エクスポーター:** OTLP、Prometheus、Console 対応
 
+### Remote Control
+
+ブラウザやスマートフォンからローカルの Claude Code セッションを操作できる。外出先からの確認や、デスクから離れた状態でのモニタリングに有用:
+
+```bash
+/remote-control                       # セッション内で Remote Control を開始
+claude remote-control                 # CLI サブコマンドで Remote Control サーバーを起動
+```
+
+**特徴:**
+- ブラウザ/モバイルからセッションに接続してプロンプト入力・結果確認が可能
+- ローカル環境のツール（ファイル読み書き、Bash 等）はそのまま動作
+- セッション切断後も再接続可能
+
 ---
 
 ## 20. サブエージェント詳細
@@ -1677,6 +1726,37 @@ claude --agents '[{"name":"reviewer","model":"opus","tools":["Read","Grep"]}]'
 - `SendMessage({to: agentId})` — 停止したエージェントを再開
 - `Agent(agent_type)` 構文でツール制限内のサブエージェント種別を指定
 - `worktree.sparsePaths` — 大規模 monorepo で sparse-checkout を使用
+
+### Agent Teams（Research Preview）
+
+> **注意:** 実験的機能。`CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1` で有効化。
+
+複数の Claude Code インスタンスが協調してタスクを分担する機能。1つのリードエージェントがタスクを設計・分配し、チームメイトが並列で実行する:
+
+```bash
+# 環境変数で有効化
+export CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1
+claude
+```
+
+**動作モデル:**
+- **リードエージェント** — タスクを設計し、チームメイトに分配。結果を統合
+- **チームメイト** — 隔離された worktree で並列実行。直接メッセージで連携可能
+- **共有タスクリスト** — 依存関係付きのタスクを管理
+
+**表示モード:**
+
+| モード | 説明 |
+|--------|------|
+| インプロセス | 1つのターミナル内でチームメイトの進捗を表示 |
+| スプリットペイン | tmux / iTerm2 でチームメイトごとに分割表示 |
+
+**対応フック:** `TeammateIdle`、`TaskCompleted`
+
+**利用例:**
+- 複数ファイルの並列リファクタリング
+- テスト作成（モジュールごとに分担）
+- マイクロサービス間の一括変更
 
 ---
 
@@ -1883,6 +1963,43 @@ GitLab でも同様の自動化が可能:
 - リファレンス devcontainer（Dockerfile + ファイアウォール設定）
 - `init-firewall.sh` でネットワークセキュリティ設定
 - `--dangerously-skip-permissions` を前提とした隔離環境用
+
+### 構造化出力（--json-schema）
+
+CI/CD パイプラインで Claude の出力を後続ステップで確実にパースするには `--json-schema` を使う:
+
+```bash
+# レビュー結果を構造化 JSON で取得
+claude -p "このコードをレビューして" \
+  --output-format json \
+  --json-schema '{"type":"object","properties":{"issues":{"type":"array","items":{"type":"object","properties":{"severity":{"type":"string"},"message":{"type":"string"},"line":{"type":"number"}}}},"summary":{"type":"string"}}}'
+```
+
+出力がスキーマに一致することが保証されるため、`jq` や後続スクリプトでの安全なパースが可能。
+
+### 高速起動（--bare）
+
+CI/CD では hooks, MCP サーバー, プラグインの初期化が不要な場合が多い。`--bare` フラグでこれらをスキップし、起動を高速化:
+
+```bash
+# CI/CD での高速実行（hooks/MCP/plugin をスキップ）
+claude --bare -p "このコードのバグを見つけて" --output-format json
+```
+
+### Scheduled Tasks（Research Preview）
+
+定期的にリモートエージェントを実行するスケジュール機能:
+
+```bash
+/schedule                    # スケジュールの作成・管理
+```
+
+**利用例:**
+- 毎朝の依存関係脆弱性チェック
+- 毎週のコードベース健全性レポート
+- 定期的な CHANGELOG 更新
+
+> **注意:** Research Preview 段階の機能。`/schedule` コマンドで cron 式スケジュールを設定。
 
 ### CI/CD のセキュリティ考慮事項
 
